@@ -7,6 +7,7 @@ import connectDB from './config/db.js';
 
 connectDB();
 import foodsRoute from './routes/foodsRoute.js';
+import categoryRoute from './routes/categoryRoute.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,6 +21,7 @@ app.use(
 
 //Routes
 app.use('/api/foods', foodsRoute);
+app.use('/api/categories', categoryRoute);
 
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
