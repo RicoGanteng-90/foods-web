@@ -1,7 +1,7 @@
 import Category from '../models/Category.js';
 
 export const createCategoryController = async (req, res) => {
-  const { name, description, imgUrl } = req.body;
+  const { name, description } = req.body;
 
   if (!name) {
     return res.status(400).json({
@@ -14,7 +14,6 @@ export const createCategoryController = async (req, res) => {
     const result = await Category.create({
       name,
       description,
-      imgUrl,
     });
 
     res.status(201).json({
