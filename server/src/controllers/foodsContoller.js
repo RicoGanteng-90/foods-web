@@ -28,12 +28,22 @@ export const getAllFoodController = async (req, res) => {
 };
 
 export const createFoodsController = async (req, res) => {
-  const { name, description, price, category } = re.body;
+  const { name, description, price, category } = req.body;
 
   if (!name || !description || !price || !category) {
+    return res.status(400).json({
+      success: false,
+      message: 'All fields are required',
+    });
   }
+
   try {
-    const result = await Food.create(req.body);
+    const result = await Food.create({
+      name,
+      description,
+      price,
+      category,
+    });
 
     if (!result) {
       throw new Error('Input failed');

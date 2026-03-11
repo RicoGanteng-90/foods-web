@@ -19,13 +19,13 @@ app.use(
   })
 );
 
-//Routes
-app.use('/api/foods', foodsRoute);
-app.use('/api/categories', categoryRoute);
-
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
+
+//Routes
+app.use('/api/foods', foodsRoute);
+app.use('/api/categories', categoryRoute);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server rocketing on http://localhost:${PORT}`);

@@ -16,7 +16,6 @@ const FoodSchema = mongoose.Schema(
     description: { type: String, required: true },
     image: String,
     price: { type: Number, required: true, min: 0 },
-    image: String,
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
