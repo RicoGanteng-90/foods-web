@@ -13,15 +13,20 @@ const addressSchema = new mongoose.Schema(
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, trim: true },
+    name: { type: String, required: [true, 'Name is required'], trim: true },
     email: {
       type: String,
-      required: true,
+      required: [true, 'Email is required'],
       trim: true,
       lowercase: true,
       unique: true,
     },
-    password: { type: String, required: true, minlength: 6, select: false },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+      minlength: 6,
+      select: false,
+    },
     role: { type: String, enum: ['customer', 'admin'], default: 'customer' },
     address: addressSchema,
   },
@@ -30,7 +35,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.pasword);
+  this.password = await bcrypt.hash(this.password, 12);
 });
 
 userSchema.methods.comparePassword = async function (candidate) {

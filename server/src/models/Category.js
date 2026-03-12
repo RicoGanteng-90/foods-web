@@ -1,9 +1,15 @@
 import mongoose from 'mongoose';
 
-const categorySchema = mongoose.Schema(
+const categorySchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true, trim: true },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     description: String,
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

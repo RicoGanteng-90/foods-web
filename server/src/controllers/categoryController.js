@@ -38,7 +38,7 @@ export const createCategoryController = async (req, res, next) => {
   }
 };
 
-const updateCategoryController = async (req, res) => {
+export const updateCategoryController = async (req, res) => {
   const { id } = req.params;
   const { name, description } = req.body;
 
@@ -53,7 +53,7 @@ const updateCategoryController = async (req, res) => {
     const category = await Category.findByIdAndUpdate(
       id,
       { name, description },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!category) {
@@ -66,6 +66,33 @@ const updateCategoryController = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Category updated successfully',
+      result: category,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteCategoryController = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const category = await Category.findByIdAndUpdate(
+      id,
+      { isDeleted: true },
+      { returnDocument: 'after' }
+    );
+
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Category deleted successfully',
       result: category,
     });
   } catch (err) {

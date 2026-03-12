@@ -1,3 +1,4 @@
+import { asyncHandler } from '../middleware/asyncHandler.js';
 import Food from '../models/Food.js';
 
 export const getAllFoodController = async (req, res, next) => {
@@ -54,3 +55,39 @@ export const createFoodsController = async (req, res) => {
     next(err);
   }
 };
+
+export const updateFoodController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const { name, description, price, category } = req.body;
+
+  const food = await Food.findByIdAndUpdate(
+    id,
+    { name, description, price, category },
+    { returnDocument: 'after' }
+  );
+
+  if (!food) {
+    return res.status(404).json({ success: false, message: 'food not found' });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Food updated successfully',
+  });
+});
+
+export const deleteFoodController = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const food = Food.findByIdAndDelete(id);
+
+  if (!food) {
+    return res.status(404).json({ success: false, message: 'food not found' });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Food deleted successfully',
+  });
+});
