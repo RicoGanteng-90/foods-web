@@ -1,6 +1,6 @@
 import Food from '../models/Food.js';
 
-export const getAllFoodController = async (req, res) => {
+export const getAllFoodController = async (req, res, next) => {
   try {
     const foods = await Food.find();
 
@@ -19,11 +19,7 @@ export const getAllFoodController = async (req, res) => {
       result: foods,
     });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to display foods',
-    });
+    next(err);
   }
 };
 
@@ -55,10 +51,6 @@ export const createFoodsController = async (req, res) => {
       result: result,
     });
   } catch (err) {
-    console.error(err.message);
-    res.status(400).json({
-      success: false,
-      message: err.message,
-    });
+    next(err);
   }
 };

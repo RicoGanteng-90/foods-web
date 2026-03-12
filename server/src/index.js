@@ -8,6 +8,7 @@ import connectDB from './config/db.js';
 connectDB();
 import foodsRoute from './routes/foodsRoute.js';
 import categoryRoute from './routes/categoryRoute.js';
+import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +27,8 @@ app.use(cookieParser());
 //Routes
 app.use('/api/foods', foodsRoute);
 app.use('/api/categories', categoryRoute);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server rocketing on http://localhost:${PORT}`);

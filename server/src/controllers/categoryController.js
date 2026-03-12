@@ -1,8 +1,20 @@
 import Category from '../models/Category.js';
 
-export const createCategoryController = async (req, res) => {
-  const { name, description } = req.body;
+export const getAllCategoriesController = async (req, res, next) => {
+  try {
+    const categories = await Category.find().sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      message: 'Categories retrieved successfully',
+      result: categories,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
+export const createCategoryController = async (req, res, next) => {
+  const { name, description } = req.body;
   if (!name) {
     return res.status(400).json({
       success: false,
@@ -22,10 +34,41 @@ export const createCategoryController = async (req, res) => {
       result: result,
     });
   } catch (err) {
-    console.error(err.message);
-    res.status(400).json({
+    next(err);
+  }
+};
+
+const updateCategoryController = async (req, res) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+
+  if (!name) {
+    return res.status(400).json({
       success: false,
-      message: err.message,
+      message: 'Category name is required',
     });
+  }
+
+  try {
+    const category = await Category.findByIdAndUpdate(
+      id,
+      { name, description },
+      { new: true }
+    );
+
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Category updated successfully',
+      result: category,
+    });
+  } catch (err) {
+    next(err);
   }
 };
