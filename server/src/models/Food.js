@@ -36,7 +36,7 @@ const FoodSchema = mongoose.Schema(
       ref: 'Category',
       required: [true, 'Food category is required'],
     },
-    isAvailable: { type: Boolean, default: true },
+    isAvailable: { type: Boolean, default: false },
     reviews: [reviewSchema],
   },
   { timestamps: true }
