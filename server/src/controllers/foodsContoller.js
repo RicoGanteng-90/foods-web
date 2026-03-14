@@ -1,6 +1,8 @@
 import { asyncHandler } from '../middleware/asyncHandler.js';
+import Category from '../models/Category.js';
 import Food from '../models/Food.js';
 import fs from 'fs';
+import path from 'path';
 
 export const getAllFoodController = async (req, res, next) => {
   try {
@@ -28,39 +30,54 @@ export const getAllFoodController = async (req, res, next) => {
 export const createFoodsController = asyncHandler(async (req, res, next) => {
   const { name, description, price, category } = req.body;
 
-  const image = req.file ? req.file.filename : undefined;
-
   if (!name || !description || !price || !category) {
+    if (req.file) {
+      const pathToDelete = path.join('uploads', req.file.filename);
+
+      if (fs.existsSync(pathToDelete)) fs.unlinkSync(pathToDelete);
+    }
+
     return res.status(400).json({
       success: false,
       message: 'All fields are required',
     });
   }
 
-  try {
-    const result = await Food.create({
-      name,
-      description,
-      image,
-      price,
-      category,
-    });
+  const categoryId = await Category.findById(category);
 
-    if (!result) {
-      throw new Error('Input failed');
+  if (!categoryId) {
+    if (req.file) {
+      const pathToDelete = path.join('uploads', req.file.filename);
+
+      if (fs.existsSync(pathToDelete)) fs.unlinkSync(pathToDelete);
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Foods created successfully',
-      result: result,
+    return res.status(404).json({
+      success: false,
+      messaage: 'categoryId not found, please provide a valid category ID',
     });
-  } catch (err) {
-    next(err);
   }
+
+  const result = await Food.create({
+    name,
+    description,
+    image: req.file ? req.file.filename : undefined,
+    price,
+    category,
+  });
+
+  if (!result) {
+    throw new Error('Input failed');
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Foods created successfully',
+    result: result,
+  });
 });
 
-export const updateFoodController = asyncHandler(async (req, res) => {
+export const updateFoodController = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { name, description, price, category } = req.body;
   const newImage = req.file ? req.file.filename : undefined;
@@ -106,17 +123,32 @@ export const updateFoodController = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Food updated successfully',
+    result: food,
   });
 });
 
-export const deleteFoodController = asyncHandler(async (req, res) => {
+export const deleteFoodController = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
-  const food = Food.findByIdAndDelete(id);
+  const food = await Food.findById(id);
 
   if (!food) {
     return res.status(404).json({ success: false, message: 'food not found' });
   }
+
+  if (food.image) {
+    const pathToDelete = path.join('uploads', food.image);
+
+    if (fs.existsSync(pathToDelete)) {
+      try {
+        fs.unlinkSync(pathToDelete);
+      } catch (err) {
+        next(err);
+      }
+    }
+  }
+
+  await Food.findByIdAndDelete(id);
 
   res.status(200).json({
     success: true,

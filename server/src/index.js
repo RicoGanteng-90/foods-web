@@ -10,6 +10,9 @@ import connectDB from './config/db.js';
 connectDB();
 import foodsRoute from './routes/foodsRoute.js';
 import categoryRoute from './routes/categoryRoute.js';
+import authRoute from './routes/authRoute.js';
+import userRoute from './routes/userRoute.js';
+import cartRoute from './routes/cartRoute.js';
 import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
@@ -31,6 +34,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 //Routes
 app.use('/api/foods', foodsRoute);
 app.use('/api/categories', categoryRoute);
+app.use('/api/auth', authRoute);
+app.use('/api/users', userRoute);
+app.use('/api/carts', cartRoute);
 
 app.use(errorHandler);
 

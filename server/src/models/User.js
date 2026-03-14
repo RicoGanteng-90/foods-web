@@ -8,12 +8,12 @@ const addressSchema = new mongoose.Schema(
     province: String,
     country: String,
   },
-  { _id: false }
+  { _id: false, strict: 'throw' }
 );
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: [true, 'Name is required'], trim: true },
+    name: { type: String, default: '', trim: true },
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -30,12 +30,13 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ['customer', 'admin'], default: 'customer' },
     address: addressSchema,
   },
-  { timestamps: true }
+  { strict: 'throw', timestamps: true }
 );
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
+  next();
 });
 
 userSchema.methods.comparePassword = async function (candidate) {

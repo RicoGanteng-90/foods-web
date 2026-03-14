@@ -29,6 +29,11 @@ const FoodSchema = mongoose.Schema(
       type: String,
       required: [true, 'Food description is required'],
     },
+    quantity: {
+      type: Number,
+      required: [true, 'Food quantity is required'],
+      min: 0,
+    },
     image: String,
     price: { type: Number, required: [true, 'Food price is required'], min: 0 },
     category: {
@@ -36,7 +41,7 @@ const FoodSchema = mongoose.Schema(
       ref: 'Category',
       required: [true, 'Food category is required'],
     },
-    isAvailable: { type: Boolean, default: false },
+    isAvailable: { type: Boolean, default: true },
     reviews: [reviewSchema],
   },
   { timestamps: true }

@@ -1,20 +1,18 @@
+import { asyncHandler } from '../middleware/asyncHandler.js';
 import Category from '../models/Category.js';
 
-export const getAllCategoriesController = async (req, res, next) => {
-  try {
-    const categories = await Category.find().sort({ createdAt: -1 });
-    res.status(200).json({
-      success: true,
-      message: 'Categories retrieved successfully',
-      result: categories,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+export const getAllCategoriesController = asyncHandler(async (req, res) => {
+  const categories = await Category.find().sort({ createdAt: -1 });
+  res.status(200).json({
+    success: true,
+    message: 'Categories retrieved successfully',
+    result: categories,
+  });
+});
 
-export const createCategoryController = async (req, res, next) => {
+export const createCategoryController = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
+
   if (!name) {
     return res.status(400).json({
       success: false,
@@ -22,23 +20,19 @@ export const createCategoryController = async (req, res, next) => {
     });
   }
 
-  try {
-    const result = await Category.create({
-      name,
-      description,
-    });
+  const result = await Category.create({
+    name,
+    description,
+  });
 
-    res.status(201).json({
-      success: true,
-      message: 'Category created successfully',
-      result: result,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+  res.status(201).json({
+    success: true,
+    message: 'Category created successfully',
+    result: result,
+  });
+});
 
-export const updateCategoryController = async (req, res) => {
+export const updateCategoryController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { name, description } = req.body;
 
@@ -49,53 +43,45 @@ export const updateCategoryController = async (req, res) => {
     });
   }
 
-  try {
-    const category = await Category.findByIdAndUpdate(
-      id,
-      { name, description },
-      { returnDocument: 'after' }
-    );
+  const category = await Category.findByIdAndUpdate(
+    id,
+    { name, description },
+    { returnDocument: 'after' }
+  );
 
-    if (!category) {
-      return res.status(404).json({
-        success: false,
-        message: 'Category not found',
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'Category updated successfully',
-      result: category,
+  if (!category) {
+    return res.status(404).json({
+      success: false,
+      message: 'Category not found',
     });
-  } catch (err) {
-    next(err);
   }
-};
 
-export const deleteCategoryController = async (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    message: 'Category updated successfully',
+    result: category,
+  });
+});
+
+export const deleteCategoryController = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const category = await Category.findByIdAndUpdate(
-      id,
-      { isDeleted: true },
-      { returnDocument: 'after' }
-    );
+  const category = await Category.findByIdAndDelete(
+    id,
+    { isDeleted: true },
+    { returnDocument: 'after' }
+  );
 
-    if (!category) {
-      return res.status(404).json({
-        success: false,
-        message: 'Category not found',
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'Category deleted successfully',
-      result: category,
+  if (!category) {
+    return res.status(404).json({
+      success: false,
+      message: 'Category not found',
     });
-  } catch (err) {
-    next(err);
   }
-};
+
+  res.status(200).json({
+    success: true,
+    message: 'Category deleted successfully',
+    result: category,
+  });
+});
