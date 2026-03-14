@@ -7,11 +7,6 @@ const reviewSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'User is required'],
     },
-    name: {
-      type: String,
-      required: [true, 'Review name is required'],
-      trim: true,
-    },
     comment: { type: String, required: [true, 'Review comment is required'] },
     rating: { type: Number, min: 1, max: 5 },
   },
@@ -23,13 +18,14 @@ const FoodSchema = mongoose.Schema(
     name: {
       type: String,
       required: [true, 'Food name is required'],
+      unique: true,
       trim: true,
     },
     description: {
       type: String,
       required: [true, 'Food description is required'],
     },
-    quantity: {
+    stock: {
       type: Number,
       required: [true, 'Food quantity is required'],
       min: 0,

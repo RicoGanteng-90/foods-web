@@ -4,6 +4,7 @@ const deliverySchema = new mongoose.Schema(
   {
     street: { type: String, required: true },
     city: { type: String, required: true },
+    province: { type: String, required: true },
     note: String,
   },
   { _id: false }
@@ -22,18 +23,18 @@ const orderSchema = new mongoose.Schema(
         name: { type: String, required: true },
         price: { type: Number, required: true },
         quantity: { type: Number, required: true, min: 1 },
-        note: String,
       },
     ],
+    note: String,
     deliveryAddress: deliverySchema,
     status: {
       type: String,
-      enum: ['Pending', 'Confirmed', 'Cooking', 'Celivered', 'Cancelled'],
-      default: 'pending',
+      enum: ['Pending', 'Confirmed', 'Cooking', 'Delivered', 'Cancelled'],
+      default: 'Pending',
     },
     total: { type: Number, required: true },
     paymentMethod: String,
-    paymentStatus: { type: Boolean, default: 'unpaid' },
+    paymentStatus: { type: Boolean },
   },
   { timestamps: true }
 );

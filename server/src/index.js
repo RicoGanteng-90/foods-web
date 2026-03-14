@@ -13,6 +13,7 @@ import categoryRoute from './routes/categoryRoute.js';
 import authRoute from './routes/authRoute.js';
 import userRoute from './routes/userRoute.js';
 import cartRoute from './routes/cartRoute.js';
+import orderRoute from './routes/orderRoute.js';
 import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
@@ -37,9 +38,10 @@ app.use('/api/categories', categoryRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/users', userRoute);
 app.use('/api/carts', cartRoute);
+app.use('/api/orders', orderRoute);
 
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server rocketing on ${process.env.SERVER_URL}:${PORT}`);
+  console.log(`🚀 Server rocketing at ${process.env.SERVER_URL}:${PORT}`);
 });
